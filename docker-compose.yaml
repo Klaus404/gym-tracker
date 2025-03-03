@@ -1,0 +1,43 @@
+services:
+  gym-tracker:
+    build:
+      context: ./gym-tracker-be  # Specify the context for the Dockerfile
+    container_name: gym-tracker-service
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/gym_tracker
+      SPRING_DATASOURCE_USERNAME: klaus
+      SPRING_DATASOURCE_PASSWORD: P@ssw0rd!
+    ports:
+      - "8080:8080"
+    networks:
+      - gym-service-network
+
+  db:
+    image: postgres:16
+    container_name: gym-tracker-db
+    environment:
+      POSTGRES_DB: gym_tracker
+      POSTGRES_USER: klaus
+      POSTGRES_PASSWORD: P@ssw0rd!
+    ports:
+      - "5432:5432"
+    networks:
+      - gym-service-network
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db-init/init.sql:/docker-entrypoint-initdb.d/init.sql  # Mount init script
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "klaus", "-d", "gym_tracker" ]
+      interval: 10s
+      retries: 5
+      start_period: 10s
+      timeout: 5s
+
+networks:
+  gym-service-network:
+
+volumes:
+  pgdata:

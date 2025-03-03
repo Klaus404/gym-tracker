@@ -11,6 +11,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
 public class Exercise {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,4 +29,11 @@ public class Exercise {
 
     @Column(name = "mentions")
     String mentions;
+
+    public Exercise(String exerciseName, int numberOfReps, float weight, String mentions) {
+        this.exerciseName = exerciseName;
+        this.numberOfReps = numberOfReps;
+        this.weight = weight;
+        this.mentions = mentions;
+    }
 }
