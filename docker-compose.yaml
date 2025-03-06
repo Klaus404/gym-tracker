@@ -10,10 +10,13 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/gym_tracker
       SPRING_DATASOURCE_USERNAME: klaus
       SPRING_DATASOURCE_PASSWORD: P@ssw0rd!
+      GOOGLE_APPLICATION_CREDENTIALS: /app/firebase-key.json  # Set environment variable for Firebase
     ports:
       - "8080:8080"
     networks:
       - gym-service-network
+    volumes:
+      - ./gym-tracker-be/src/main/resources/firebase-key.json:/app/firebase-key.json  # Mount Firebase service account file
 
   db:
     image: postgres:16

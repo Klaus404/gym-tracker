@@ -25,6 +25,7 @@ bin/
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
+/gym-tracker-be/src/main/resources/firebase-key.json
 
 ### NetBeans ###
 /nbproject/private/

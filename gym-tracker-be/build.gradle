@@ -21,12 +21,12 @@ configurations {
 
 repositories {
     mavenCentral()
+    google()
 }
 
 dependencies {
     // Spring Boot Starters
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'  // For JPA
-    implementation 'org.springframework.boot:spring-boot-starter-web'  // For Web functionality
 
     // PostgreSQL Driver
     runtimeOnly 'org.postgresql:postgresql'  // Add PostgreSQL JDBC Driver
@@ -38,8 +38,15 @@ dependencies {
     // Spring Boot DevTools (only for development)
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
-    // Microsoft SQL Server JDBC (if using SQL Server in some other part)
-    runtimeOnly 'com.microsoft.sqlserver:mssql-jdbc'
+
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'com.google.firebase:firebase-admin:9.3.0'
+
+
+
+
 
     // Testing dependencies
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

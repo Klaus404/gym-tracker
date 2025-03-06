@@ -1,0 +1,21 @@
+#SIGNUP
+curl -X POST "http://localhost:8080/api/users/signup" \
+     -H "Content-Type: application/json" \
+     -d '{
+           "email": "newuser@example.com",
+           "password": "SecurePassword123",
+           "fullName": "John Doe"
+         }'
+
+#LOGIN
+curl -X POST "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=YOUR_FIREBASE_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "your-user-email@example.com",
+    "password": "your-user-password",
+    "returnSecureToken": true
+  }'
+
+  #TEST
+  curl -X GET "http://localhost:8080/protected-endpoint" \
+    -H "Authorization: Bearer YOUR_FIREBASE_ID_TOKEN"
