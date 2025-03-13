@@ -4,6 +4,8 @@ import com.klaus.gymtracker.dao.ExerciseRepository;
 import com.klaus.gymtracker.entity.Exercise;
 import com.klaus.gymtracker.service.ExerciseService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,8 +21,9 @@ public class ExerciseController {
     }
 
     @GetMapping("/exercises")
-    List<String> listExercises(){
-        return service.getExerciseNameList();
+    public List<Exercise> listUserExercises(@AuthenticationPrincipal Jwt principal) {
+        String userId = principal.getClaim("user_id"); // Extract user ID from Firebase token
+        return service.getExercisesForUser(userId);
     }
 
     @GetMapping("/exercise/{exerciseName}")
@@ -28,8 +31,10 @@ public class ExerciseController {
         return service.getExerciseByName(exerciseName);
     }
 
-    @PostMapping("/exercise")
-    void createExercise(Exercise newExercise){
-        service.saveNewExercise(newExercise);
+    @PostMapping("/exercises")
+    public ResponseEntity<String> createExercise(@AuthenticationPrincipal Jwt principal, @RequestBody Exercise exercise) {
+        String userId = principal.getClaim("user_id");
+        service.saveNewExercise(userId, exercise);
+        return ResponseEntity.ok("Exercise added successfully.");
     }
 }

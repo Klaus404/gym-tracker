@@ -30,6 +30,10 @@ public class Exercise {
     @Column(name = "mentions")
     String mentions;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = true)
+    private User user;
+
     public Exercise(String exerciseName, int numberOfReps, float weight, String mentions) {
         this.exerciseName = exerciseName;
         this.numberOfReps = numberOfReps;
