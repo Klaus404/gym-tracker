@@ -5,13 +5,11 @@ FROM gradle:8.5-jdk21 AS build
 WORKDIR /home/gradle/src
 
 # Copy Gradle files
-COPY settings.gradle gradle/wrapper/gradle-wrapper.properties build.gradle ./
-
-# Copy source code
-COPY src ./src
+COPY . .
 
 # Run Gradle build
-RUN gradle build --no-daemon
+RUN chmod +x gradlew
+RUN ./gradlew build --no-daemon
 
 # Stage 2: Run Stage
 FROM eclipse-temurin:21-jre

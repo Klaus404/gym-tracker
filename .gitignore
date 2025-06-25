@@ -33,6 +33,6 @@ out/
 /dist/
 /nbdist/
 /.nb-gradle/
-
+firebase-api-key.txt
 ### VS Code ###
 .vscode/

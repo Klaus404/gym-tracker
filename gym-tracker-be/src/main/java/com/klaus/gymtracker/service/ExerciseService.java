@@ -16,10 +16,12 @@ import java.util.List;
 public class ExerciseService {
     private final ExerciseRepository exerciseRepository;
     private final UserRepository userRepository;
+    private final UserService userService;
 
-    public ExerciseService(ExerciseRepository exerciseRepository, UserRepository userRepository) {
+    public ExerciseService(ExerciseRepository exerciseRepository, UserRepository userRepository, UserService userService) {
         this.exerciseRepository = exerciseRepository;
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     public List<Exercise> getExercisesForUser(String userId) {
@@ -28,22 +30,12 @@ public class ExerciseService {
 
     public void saveNewExercise(String userId, Exercise exercise) {
         User user = userRepository.findById(userId)
-                .orElseGet(() -> createNewUser(userId)); // Create user if not exists
+                .orElseGet(() -> userService.createNewUser(userId)); // Create user if not exists
 
         exercise.setUser(user);
         exerciseRepository.save(exercise);
     }
 
-    private User createNewUser(String userId) {
-        // Retrieve user details from Firebase
-        try {
-            UserRecord userRecord = FirebaseAuth.getInstance().getUser(userId);
-            User newUser = new User(userRecord.getUid(), userRecord.getEmail(), List.of());
-            return userRepository.save(newUser);
-        } catch (FirebaseAuthException e) {
-            throw new RuntimeException("Failed to fetch user from Firebase", e);
-        }
-    }
 
     public Exercise getExerciseByName(String exerciseName) {
         return exerciseRepository.findByExerciseName(exerciseName);
