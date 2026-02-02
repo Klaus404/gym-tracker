@@ -1,12 +1,10 @@
 package com.klaus.gymtracker.controller;
 
-import com.klaus.gymtracker.dao.ExerciseRepository;
 import com.klaus.gymtracker.entity.Exercise;
 import com.klaus.gymtracker.service.ExerciseService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.stereotype.Controller;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,21 +18,44 @@ public class ExerciseController {
         this.service = service;
     }
 
+    @GetMapping("/public/exercises")
+    List<String> listPublicExercises(){
+        return service.getExerciseNameList();
+    }
+
     @GetMapping("/exercises")
-    public List<Exercise> listUserExercises(@AuthenticationPrincipal Jwt principal) {
-        String userId = principal.getClaim("user_id"); // Extract user ID from Firebase token
-        return service.getExercisesForUser(userId);
+    ResponseEntity<?> listUserExercises(@AuthenticationPrincipal OAuth2User principal){
+        try {
+            String userId = principal.getAttribute("sub");
+            List<Exercise> exercises = service.getExercisesForUser(userId);
+            return ResponseEntity.ok(exercises);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
     }
 
     @GetMapping("/exercise/{exerciseName}")
-    Exercise getExercise(@PathVariable String exerciseName){
-        return service.getExerciseByName(exerciseName);
+    ResponseEntity<?> getExercise(@PathVariable String exerciseName, @AuthenticationPrincipal OAuth2User principal){
+        try {
+            String userId = principal.getAttribute("sub");
+            Exercise exercise = service.getExerciseByNameForUser(exerciseName, userId);
+            if (exercise != null) {
+                return ResponseEntity.ok(exercise);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
     }
 
-    @PostMapping("/exercises")
-    public ResponseEntity<String> createExercise(@AuthenticationPrincipal Jwt principal, @RequestBody Exercise exercise) {
-        String userId = principal.getClaim("user_id");
-        service.saveNewExercise(userId, exercise);
-        return ResponseEntity.ok("Exercise added successfully.");
+    @PostMapping("/exercise")
+    ResponseEntity<?> createExercise(@RequestBody Exercise newExercise, @AuthenticationPrincipal OAuth2User principal){
+        try {
+            service.saveNewExercise(principal, newExercise);
+            return ResponseEntity.ok("Exercise created successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
     }
 }

@@ -39,10 +39,13 @@ dependencies {
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
 
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    // Spring Security & OAuth2
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'com.google.firebase:firebase-admin:9.3.0'
+    
+    // Okta Spring Boot Starter
+    implementation 'com.okta.spring:okta-spring-boot-starter:3.0.7'
 
 
 

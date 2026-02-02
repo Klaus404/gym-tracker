@@ -1,14 +1,11 @@
 package com.klaus.gymtracker.service;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.UserRecord;
-import com.google.firebase.auth.UserRecord.CreateRequest;
 import com.klaus.gymtracker.dao.UserRepository;
 import com.klaus.gymtracker.entity.User;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -18,30 +15,33 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public UserRecord createUser(String email, String password) {
-        try {
-            UserRecord.CreateRequest request = new UserRecord.CreateRequest()
-                    .setEmail(email)
-                    .setPassword(password);
+    public User createOrUpdateUser(OAuth2User oauth2User) {
+        String oktaId = oauth2User.getAttribute("sub");
+        String email = oauth2User.getAttribute("email");
+        String firstName = oauth2User.getAttribute("given_name");
+        String lastName = oauth2User.getAttribute("family_name");
 
-            UserRecord userRecord = FirebaseAuth.getInstance().createUser(request);
-            System.out.println("Successfully created user: " + userRecord.getUid());
-            return userRecord;
-        } catch (Exception e) {
-            System.err.println("Error creating Firebase user: " + e.getMessage());
-            throw new RuntimeException("Firebase error: " + e.getMessage(), e);
-        }
-    }
-
-    User createNewUser(String userId) {
-        // Retrieve user details from Firebase
-        try {
-            UserRecord userRecord = FirebaseAuth.getInstance().getUser(userId);
-            User newUser = new User(userRecord.getUid(), userRecord.getEmail(), List.of());
+        Optional<User> existingUser = userRepository.findById(oktaId);
+        
+        if (existingUser.isPresent()) {
+            User user = existingUser.get();
+            user.setEmail(email);
+            user.setFirstName(firstName);
+            user.setLastName(lastName);
+            return userRepository.save(user);
+        } else {
+            User newUser = new User(oktaId, email, firstName, lastName);
             return userRepository.save(newUser);
-        } catch (FirebaseAuthException e) {
-            throw new RuntimeException("Failed to fetch user from Firebase", e);
         }
     }
 
+    public Optional<User> findByOktaId(String oktaId) {
+        return userRepository.findById(oktaId);
+    }
+
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findAll().stream()
+                .filter(user -> user.getEmail().equals(email))
+                .findFirst();
+    }
 }
