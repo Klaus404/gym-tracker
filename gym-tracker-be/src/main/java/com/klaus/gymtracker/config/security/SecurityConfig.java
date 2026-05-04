@@ -25,7 +25,7 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             )
             .oauth2Login(oauth2 -> oauth2
-                .loginPage("/oauth2/authorization/okta")
+                .loginPage("/oauth2/authorization/keycloak")
                 .successHandler(authenticationSuccessHandler())
             )
             .logout(logout -> logout
@@ -52,7 +52,8 @@ public class SecurityConfig {
                 String email = oauth2User.getAttribute("email");
                 String firstName = oauth2User.getAttribute("given_name");
                 String lastName = oauth2User.getAttribute("family_name");
-                String oktaId = oauth2User.getAttribute("sub");
+                String keycloakId = oauth2User.getAttribute("sub");
+                String username = oauth2User.getAttribute("preferred_username");
                 
                 // Redirect to frontend or return user info
                 response.sendRedirect("/api/auth/login-success");

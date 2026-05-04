@@ -36,3 +36,6 @@ out/
 firebase-api-key.txt
 ### VS Code ###
 .vscode/
+
+### Secret ####
+/gym-tracker-be/src/main/resources/application.properties

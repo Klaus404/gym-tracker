@@ -1,0 +1,184 @@
+<div class="form-container">
+  <mat-card class="form-card">
+    <mat-card-header>
+      <mat-card-title>
+        @if (isEditMode) {
+          Edit Training
+        } @else {
+          Create New Training
+        }
+      </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      @if (loading) {
+        <div class="loading-container">
+          <mat-spinner></mat-spinner>
+        </div>
+      } @else {
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+          <!-- Training Details Section -->
+          <div class="section">
+            <h3>Training Details</h3>
+
+            <div class="form-group">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Exercise Name</mat-label>
+                <mat-select formControlName="exerciseName">
+                  <mat-option value="">Select an exercise</mat-option>
+                  @for (exercise of exercises; track exercise.id) {
+                    <mat-option [value]="exercise.exerciseName">
+                      {{ exercise.exerciseName }}
+                    </mat-option>
+                  }
+                </mat-select>
+                @if (form.get('exerciseName')?.hasError('required')) {
+                  <mat-error>Exercise is required</mat-error>
+                }
+              </mat-form-field>
+            </div>
+
+            <div class="form-group">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Workout Date</mat-label>
+                <input 
+                  matInput 
+                  [matDatepicker]="picker"
+                  formControlName="workoutDate"
+                />
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+                @if (form.get('workoutDate')?.hasError('required')) {
+                  <mat-error>Workout date is required</mat-error>
+                }
+              </mat-form-field>
+            </div>
+
+            <div class="form-group">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Notes</mat-label>
+                <textarea 
+                  matInput 
+                  formControlName="notes"
+                  placeholder="Add notes about this training session"
+                  rows="3"
+                ></textarea>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <mat-divider></mat-divider>
+
+          <!-- Sets Section -->
+          <div class="section">
+            <div class="sets-header">
+              <h3>Sets</h3>
+              <button 
+                type="button"
+                mat-stroked-button 
+                color="primary"
+                (click)="addSet()"
+              >
+                <mat-icon>add</mat-icon>
+                Add Set
+              </button>
+            </div>
+
+            <div formArrayName="sets">
+              @if (setsArray.length > 0) {
+                <div class="sets-list">
+                  @for (i of setIndices; track i) {
+                    <div [formGroupName]="i" class="set-item">
+                      <div class="set-number">Set {{ i + 1 }}</div>
+
+                      <mat-form-field appearance="outline">
+                        <mat-label>Weight (kg)</mat-label>
+                        <input 
+                          matInput 
+                          formControlName="weight"
+                          type="number"
+                          step="0.1"
+                          placeholder="e.g., 20.5"
+                        />
+                         @if (setsArray.at(i)!.get('weight')?.hasError('required')) {
+                           <mat-error>Weight is required</mat-error>
+                         }
+                       </mat-form-field>
+
+                      <mat-form-field appearance="outline">
+                        <mat-label>Reps</mat-label>
+                        <input 
+                          matInput 
+                          formControlName="reps"
+                          type="number"
+                          placeholder="e.g., 10"
+                        />
+                         @if (setsArray.at(i)!.get('reps')?.hasError('required')) {
+                           <mat-error>Reps are required</mat-error>
+                         }
+                         @if (setsArray.at(i)!.get('reps')?.hasError('min')) {
+                           <mat-error>Reps must be at least 1</mat-error>
+                         }
+                       </mat-form-field>
+
+                      <mat-form-field appearance="outline">
+                        <mat-label>Notes</mat-label>
+                        <input 
+                          matInput 
+                          formControlName="notes"
+                          placeholder="Optional notes"
+                        />
+                      </mat-form-field>
+
+                      <button 
+                        type="button"
+                        mat-icon-button 
+                        color="warn"
+                        (click)="removeSet(i)"
+                        matTooltip="Remove set"
+                      >
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </div>
+                  }
+                </div>
+              } @else {
+                <div class="empty-sets">
+                  <p>No sets added yet</p>
+                </div>
+              }
+            </div>
+          </div>
+
+          <mat-divider></mat-divider>
+
+          <!-- Form Actions -->
+          <div class="form-actions">
+            <button 
+              mat-raised-button 
+              type="submit"
+              color="primary"
+              [disabled]="form.invalid || loading"
+            >
+              <mat-icon>save</mat-icon>
+              @if (isEditMode) {
+                Update Training
+              } @else {
+                Create Training
+              }
+            </button>
+            <button 
+              mat-stroked-button 
+              type="button"
+              (click)="cancel()"
+              [disabled]="loading"
+            >
+              <mat-icon>cancel</mat-icon>
+              Cancel
+            </button>
+          </div>
+        </form>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>

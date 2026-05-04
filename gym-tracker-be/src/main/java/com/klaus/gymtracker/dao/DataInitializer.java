@@ -38,20 +38,34 @@ public class DataInitializer implements CommandLineRunner {
 
         // Check if exercises exist before inserting
         if (exerciseRepository.count() == 0) {
-            List<Exercise> exercises = Arrays.asList(
-                    new Exercise(null, "Push Up", 10, 20f, "Standard push-up", user1),
-                    new Exercise(null, "Pull Up", 8, 0f, "Wide grip pull-up", user1),
-                    new Exercise(null, "Squat", 12, 40f, "Bodyweight squat", user2),
-                    new Exercise(null, "Deadlift", 5, 60f, "Conventional deadlift", user2),
-                    new Exercise(null, "Bench Press", 8, 50f, "Barbell bench press", user1),
-                    new Exercise(null, "Bicep Curl", 12, 15f, "Dumbbell bicep curl", user2),
-
-                    // New exercises for the third user
-                    new Exercise(null, "Lat Pulldown", 10, 45f, "Cable machine lat pulldown", user3),
-                    new Exercise(null, "Lunges", 12, 25f, "Dumbbell lunges", user3),
-                    new Exercise(null, "Overhead Press", 8, 30f, "Standing overhead barbell press", user3)
-            );
-
+            Exercise ex1 = new Exercise("Push Up", 10, 20f, "Standard push-up");
+            ex1.setUser(user1);
+            
+            Exercise ex2 = new Exercise("Pull Up", 8, 0f, "Wide grip pull-up");
+            ex2.setUser(user1);
+            
+            Exercise ex3 = new Exercise("Squat", 12, 40f, "Bodyweight squat");
+            ex3.setUser(user2);
+            
+            Exercise ex4 = new Exercise("Deadlift", 5, 60f, "Conventional deadlift");
+            ex4.setUser(user2);
+            
+            Exercise ex5 = new Exercise("Bench Press", 8, 50f, "Barbell bench press");
+            ex5.setUser(user1);
+            
+            Exercise ex6 = new Exercise("Bicep Curl", 12, 15f, "Dumbbell bicep curl");
+            ex6.setUser(user2);
+            
+            Exercise ex7 = new Exercise("Lat Pulldown", 10, 45f, "Cable machine lat pulldown");
+            ex7.setUser(user3);
+            
+            Exercise ex8 = new Exercise("Lunges", 12, 25f, "Dumbbell lunges");
+            ex8.setUser(user3);
+            
+            Exercise ex9 = new Exercise("Overhead Press", 8, 30f, "Standing overhead barbell press");
+            ex9.setUser(user3);
+            
+            List<Exercise> exercises = Arrays.asList(ex1, ex2, ex3, ex4, ex5, ex6, ex7, ex8, ex9);
             exerciseRepository.saveAll(exercises);
             System.out.println("Dummy data inserted!");
         }

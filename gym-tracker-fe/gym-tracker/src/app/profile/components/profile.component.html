@@ -1,0 +1,78 @@
+<div class="profile-container">
+  <h1>User Profile</h1>
+
+  @if (loading) {
+    <div class="loading-container">
+      <mat-spinner></mat-spinner>
+    </div>
+  } @else {
+    @if (user) {
+      <div class="profile-content">
+        <mat-card class="profile-card">
+          <mat-card-header>
+            <div class="profile-avatar">
+              <mat-icon>account_circle</mat-icon>
+            </div>
+            <mat-card-title>{{ user.name || user.firstName + ' ' + user.lastName }}</mat-card-title>
+          </mat-card-header>
+
+          <mat-divider></mat-divider>
+
+          <mat-card-content class="profile-details">
+            <div class="detail-row">
+              <label>Email:</label>
+              <span>{{ user.email }}</span>
+            </div>
+
+            <div class="detail-row">
+              <label>First Name:</label>
+              <span>{{ user.firstName }}</span>
+            </div>
+
+            <div class="detail-row">
+              <label>Last Name:</label>
+              <span>{{ user.lastName }}</span>
+            </div>
+
+            <div class="detail-row">
+              <label>User ID:</label>
+              <span>{{ user.id }}</span>
+            </div>
+          </mat-card-content>
+
+          <mat-divider></mat-divider>
+
+          <mat-card-actions class="profile-actions">
+            <button 
+              mat-raised-button 
+              color="primary"
+              (click)="syncUser()"
+              [disabled]="syncing"
+            >
+              <mat-icon>{{ syncing ? 'refresh' : 'cloud_sync' }}</mat-icon>
+              {{ syncing ? 'Syncing...' : 'Sync Data' }}
+            </button>
+            <button 
+              mat-raised-button 
+              color="warn"
+              (click)="logout()"
+            >
+              <mat-icon>logout</mat-icon>
+              Logout
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+    } @else {
+      <mat-card class="error-card">
+        <mat-card-content>
+          <p>Unable to load user profile. Please try again.</p>
+          <button mat-raised-button color="primary" (click)="loadUserProfile()">
+            <mat-icon>refresh</mat-icon>
+            Retry
+          </button>
+        </mat-card-content>
+      </mat-card>
+    }
+  }
+</div>

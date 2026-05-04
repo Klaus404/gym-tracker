@@ -1,0 +1,38 @@
+gym-tracker-db  | The files belonging to this database system will be owned by user "postgres".
+gym-tracker-db  | This user must also own the server process.
+gym-tracker-db  | 
+gym-tracker-db  | The database cluster will be initialized with locale "en_US.utf8".
+gym-tracker-db  | The default database encoding has accordingly been set to "UTF8".
+gym-tracker-db  | The default text search configuration will be set to "english".
+gym-tracker-db  | 
+gym-tracker-db  | Data page checksums are disabled.
+gym-tracker-db  | 
+gym-tracker-db  | fixing permissions on existing directory /var/lib/postgresql/data ... ok
+gym-tracker-db  | creating subdirectories ... ok
+gym-tracker-db  | selecting dynamic shared memory implementation ... posix
+gym-tracker-db  | selecting default max_connections ... 100
+gym-tracker-db  | selecting default shared_buffers ... 128MB
+gym-tracker-db  | selecting default time zone ... Etc/UTC
+gym-tracker-db  | creating configuration files ... ok
+gym-tracker-db  | running bootstrap script ... ok
+gym-tracker-db  | performing post-bootstrap initialization ... ok
+gym-tracker-db  | syncing data to disk ... ok
+gym-tracker-db  | initdb: warning: enabling "trust" authentication for local connections
+gym-tracker-db  | 
+gym-tracker-db  | initdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next time you run initdb.
+gym-tracker-db  | 
+gym-tracker-db  | Success. You can now start the database server using:
+gym-tracker-db  | 
+gym-tracker-db  |     pg_ctl -D /var/lib/postgresql/data -l logfile start
+gym-tracker-db  | 
+gym-tracker-db  | waiting for server to start....2026-02-05 15:46:10.358 UTC [48] LOG:  starting PostgreSQL 16.11 (Debian 16.11-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+gym-tracker-db  | 2026-02-05 15:46:10.359 UTC [48] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+gym-tracker-db  | 2026-02-05 15:46:10.364 UTC [51] LOG:  database system was shut down at 2026-02-05 15:46:08 UTC
+gym-tracker-db  | 2026-02-05 15:46:10.367 UTC [48] LOG:  database system is ready to accept connections
+gym-tracker-db  |  done
+gym-tracker-db  | server started
+gym-tracker-db  | CREATE DATABASE
+gym-tracker-db  | 
+gym-tracker-db  | 
+gym-tracker-db  | /usr/local/bin/docker-entrypoint.sh: running /docker-entrypoint-initdb.d/01-gym-tracker.sql
+gym-tracker-db  | psql: error: /docker-entrypoint-initdb.d/01-gym-tracker.sql: Permission denied

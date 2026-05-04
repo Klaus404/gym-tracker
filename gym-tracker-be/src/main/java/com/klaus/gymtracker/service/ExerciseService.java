@@ -46,6 +46,10 @@ public class ExerciseService {
         return exerciseRepository.findByExerciseNameAndUserId(exerciseName, userId);
     }
 
+    public void deleteExercise(Long exerciseId) {
+        exerciseRepository.deleteById(exerciseId);
+    }
+
     // Legacy methods for backward compatibility
     public List<String> getExerciseNameList() {
         return exerciseRepository.findAll().stream()

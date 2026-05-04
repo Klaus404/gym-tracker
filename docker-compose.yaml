@@ -1,4 +1,18 @@
 services:
+  gym-tracker-fe:
+    build:
+      context: ./gym-tracker-fe/gym-tracker
+      dockerfile: Dockerfile
+    container_name: gym-tracker-fe
+    ports:
+      - "4200:4200"
+    networks:
+      - gym-service-network
+    depends_on:
+      - gym-tracker
+    environment:
+      API_URL: http://gym-tracker:8080
+
   gym-tracker:
     build:
       context: ./gym-tracker-be  # Specify the context for the Dockerfile
@@ -10,13 +24,20 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/gym_tracker
       SPRING_DATASOURCE_USERNAME: klaus
       SPRING_DATASOURCE_PASSWORD: P@ssw0rd!
-      GOOGLE_APPLICATION_CREDENTIALS: /app/firebase-key.json  # Set environment variable for Firebase
+      # Keycloak OAuth2 Configuration
+      KEYCLOAK_CLIENT_ID: gym-tracker-app
+      KEYCLOAK_CLIENT_SECRET: gym-tracker-secret
+      KEYCLOAK_ISSUER_URI: http://keycloak:8080/realms/gym-tracker
+      KEYCLOAK_AUTH_URI: http://keycloak:8080/realms/gym-tracker/protocol/openid-connect/auth
+      KEYCLOAK_TOKEN_URI: http://keycloak:8080/realms/gym-tracker/protocol/openid-connect/token
+      KEYCLOAK_USER_INFO_URI: http://keycloak:8080/realms/gym-tracker/protocol/openid-connect/userinfo
+      KEYCLOAK_JWK_SET_URI: http://keycloak:8080/realms/gym-tracker/protocol/openid-connect/certs
+      KEYCLOAK_REDIRECT_URI: http://localhost:8080/login/oauth2/code/keycloak
     ports:
       - "8080:8080"
     networks:
       - gym-service-network
-    volumes:
-      - ./gym-tracker-be/src/main/resources/firebase-key.json:/app/firebase-key.json  # Mount Firebase service account file
+
 
   db:
     image: postgres:16
@@ -31,13 +52,40 @@ services:
       - gym-service-network
     volumes:
       - pgdata:/var/lib/postgresql/data
-      - ./db-init/init.sql:/docker-entrypoint-initdb.d/init.sql  # Mount init script
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "klaus", "-d", "gym_tracker" ]
       interval: 10s
       retries: 5
       start_period: 10s
       timeout: 5s
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:25.0.0
+    container_name: gym-tracker-keycloak
+    command: start-dev
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://db:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: keycloak_password
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin123
+      KC_HOSTNAME: localhost
+      KC_HOSTNAME_PORT: 8081
+      KC_HOSTNAME_STRICT_BACKCHANNEL: false
+    ports:
+      - "8081:8080"
+    networks:
+      - gym-service-network
+    depends_on:
+      db:
+        condition: service_healthy
+    # healthcheck:
+    #   test: [ "CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080/ || exit 1" ]
+    #   interval: 10s
+    #   retries: 10
+    #   start_period: 30s
+    #   timeout: 5s
 
 networks:
   gym-service-network:

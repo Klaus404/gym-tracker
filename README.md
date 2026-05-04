@@ -15,6 +15,40 @@ Before running the app, ensure you have the following installed:
 - **Docker**
 - **Docker Compose**
 
+## 🚀 Quick Start (Recommended)
+
+The easiest way to start the application is using the provided startup scripts:
+
+### Start the Application
+
+```bash
+./start.sh
+```
+
+This will start all services and display URLs and credentials.
+
+### Stop the Application
+
+```bash
+./stop.sh
+```
+
+### View Service Logs
+
+```bash
+./logs.sh
+```
+
+### Check Service Status
+
+```bash
+./status.sh
+```
+
+**For more details, see [SCRIPTS.md](SCRIPTS.md)**
+
+---
+
 ## Running the Application with Docker Compose
 
 ### 1. Clone the Repository
@@ -26,19 +60,31 @@ cd gym-tracker
 ```
 
 ### 2. Build and Run the Containers
-To build and start the application with Docker Compose, run:
 
+#### Using Startup Script (Recommended)
+```bash
+./start.sh
+```
+
+#### Using Docker Compose Directly
 ```sh
 docker-compose up --build
 ```
 
 This will:
 - Build the Docker images for the application and the PostgreSQL database.
-- Start the containers as defined in `docker-compose.yml`.
+- Start the containers as defined in `docker-compose.yaml`.
 
-The application will be accessible at: [http://localhost:8080](http://localhost:8080).
+### 3. Access the Application
 
-### 3. Connecting to the PostgreSQL Database
+| Service | URL | Purpose |
+|---------|-----|---------|
+| Frontend | http://localhost:4200 | Angular Web App |
+| Backend | http://localhost:8080 | Spring Boot API |
+| Keycloak | http://localhost:8081 | OAuth2 Authentication |
+| Database | localhost:5432 | PostgreSQL Database |
+
+### 4. Connecting to the PostgreSQL Database
 
 #### Option 1: Connect via Docker CLI
 Run the following command to connect to the database:
@@ -56,24 +102,34 @@ Use the following connection details:
 - **Username**: `klaus`
 - **Password**: `P@ssw0rd!`
 
-### 4. Stopping the Application
-To stop the running containers, use:
+### 5. Stopping the Application
 
+#### Using Startup Script
+```bash
+./stop.sh
+```
+
+#### Using Docker Compose Directly
 ```sh
 docker-compose down
 ```
 
-### 5. Viewing Logs
-To view the logs of the Gym Tracker service, run:
+### 6. Viewing Logs
 
-```sh
-docker-compose logs gym-tracker-service
+#### Using Logs Script (Interactive)
+```bash
+./logs.sh
 ```
 
-For database logs:
-
+#### Using Docker Compose Directly
 ```sh
-docker-compose logs gym-tracker-db
+# All services
+docker-compose logs -f
+
+# Specific service
+docker-compose logs -f gym-tracker
+docker-compose logs -f gym-tracker-fe
+docker-compose logs -f keycloak
 ```
 
 
